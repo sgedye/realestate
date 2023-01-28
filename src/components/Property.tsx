@@ -15,11 +15,27 @@ interface PropertyProps {
   subtitle?: string;
   description?: string;
   building_size?: string;
-  property_id?: string;
+  property_id: string;
 }
 
 export const Property = (props: PropertyProps) => {
   const mapAddress = props.address.replaceAll(" ", "%20");
+  const propertyBaseUrl = "https://www.realestate.com.au/property/";
+  const propertyPrefix = /^\d+\/\d+/.test(props.address) ? "unit-" : "";
+  const propertyAddressUrl = props.address
+    .toLowerCase()
+    .replaceAll(/[, \/]+/g, "-")
+    .replace("road", "rd")
+    .replace("street", "st")
+    .replace("parade", "pde")
+    .replace("place", "pl")
+    .replace("avenue", "ave")
+    .replace("terrace", "tce");
+
+  const showConfirmDelete = (id: number) => {
+    console.log("deleting property id: ", id);
+  };
+
   return (
     <article className="flex flex-col lg:flex-row bg-gray-400 gap-2 overflow-hidden rounded-lg mb-6">
       <img
@@ -78,6 +94,39 @@ export const Property = (props: PropertyProps) => {
               height={20}
               className="text-white inline-block ml-1"
             />
+          </div>
+        </div>
+        <div className="flex flex-row gap-4 mt-auto">
+          <div>
+            <a
+              href={props["link-href"]}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block text-center px-4 py-2 space-x-3 text-sm border rounded-lg dark:text-gray-200 dark:border-gray-200
+            hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              View property
+            </a>
+          </div>
+          <div>
+            <a
+              href={propertyBaseUrl + propertyPrefix + propertyAddressUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block text-center px-4 py-2 space-x-3 text-sm border rounded-lg dark:text-gray-200 dark:border-gray-200
+ hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              Link to past sales
+            </a>
+          </div>
+          <div className="ml-auto">
+            <button
+              className="px-4 py-2 space-x-3 text-sm border rounded-lg dark:text-red-200 dark:border-red-200
+ hover:bg-red-100 dark:hover:bg-red-700"
+              onClick={() => showConfirmDelete(Number(props.property_id))}
+            >
+              Remove from list
+            </button>
           </div>
         </div>
       </div>
