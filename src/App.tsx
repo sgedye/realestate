@@ -1,9 +1,8 @@
 import { useState } from "react";
 
-import { Filters, Property, PropertyProps } from "./components";
+import { Accordion, Filters, Property, PropertyProps } from "./components";
 
 import townhouses from "./data/townhouses.json";
-import { Property } from "./components";
 
 function App() {
   const [searchFilter, setSearchFilter] = useState<string>("");
@@ -23,10 +22,6 @@ function App() {
 
   return (
     <div className="container mx-auto my-8">
-      <div className="border p-4 text-center bg-gray-500 rounded-lg mb-6">
-        TO DO - Add in a search / filter here.
-      </div>
-      {townhouses.map((n) => (
       <Filters
         results={[...townhouses].slice(0, 8)}
         onUpdateSearch={handleUpdateSearch}
@@ -35,6 +30,15 @@ function App() {
       {[...filteredResults].slice(0, 8).map((n) => (
         <Property key={n.property_id} {...n} />
       ))}
+
+      <Accordion
+        list={[...townhouses].slice(0, 8).map((n) => {
+          return {
+            question: n.address,
+            answer: n.description || "test desc",
+          };
+        })}
+      />
     </div>
   );
 }
