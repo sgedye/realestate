@@ -1,13 +1,14 @@
 import { useState } from "react";
 
-import { Accordion, Filters, Property, PropertyProps } from "./components";
+import { Accordion, Filters, Property, PropertyDetails } from "./components";
+import type { ScrapedPropertyType } from "./types";
 
 import townhouses from "./data/townhouses.json";
 
 function App() {
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [filteredResults, setFilteredResults] =
-    useState<PropertyProps[]>(townhouses);
+    useState<ScrapedPropertyType[]>(townhouses);
 
   const handleUpdateSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchFilter(e.target.value);
@@ -27,17 +28,11 @@ function App() {
         onUpdateSearch={handleUpdateSearch}
         searchFilter={searchFilter}
       />
-      {[...filteredResults].slice(0, 8).map((n) => (
-        <Property key={n.property_id} {...n} />
-      ))}
-
       <Accordion
-        list={[...townhouses].slice(0, 8).map((n) => {
-          return {
-            question: n.address,
-            answer: n.description || "test desc",
-          };
-        })}
+        list={[...filteredResults].slice(0, 8).map((n) => ({
+          visibleContent: <Property key={n.property_id} {...n} />,
+          hiddenContent: <PropertyDetails key={n.property_id} {...n} />,
+        }))}
       />
     </div>
   );

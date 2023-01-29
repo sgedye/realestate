@@ -1,22 +1,7 @@
 import { SvgIcon } from "./SvgIcons";
+import type { ScrapedPropertyType } from "../types";
 
-export interface PropertyProps {
-  "web-scraper-order": string;
-  "web-scraper-start-url": string;
-  link: string;
-  "link-href": string;
-  address: string;
-  bedrooms?: string;
-  bathrooms?: string;
-  carbays?: string;
-  type?: string;
-  title?: string;
-  "image-src"?: string;
-  subtitle?: string;
-  description?: string;
-  building_size?: string;
-  property_id: string;
-}
+interface PropertyProps extends ScrapedPropertyType {};
 
 export const Property = (props: PropertyProps) => {
   const mapAddress = props.address.replaceAll(" ", "%20");
@@ -37,7 +22,7 @@ export const Property = (props: PropertyProps) => {
   };
 
   return (
-    <article className="flex flex-col lg:flex-row bg-gray-400 gap-2 overflow-hidden rounded-lg mb-6">
+    <section className="flex flex-col lg:flex-row bg-gray-400 gap-2">
       <img
         src={props["image-src"]}
         alt={props.address}
@@ -137,7 +122,7 @@ export const Property = (props: PropertyProps) => {
           src={`https://maps.google.com/maps?q=${mapAddress}&z=13&output=embed`}
         ></iframe> */}
       </div>      
-    </article>
+    </section>
   );
 };
 

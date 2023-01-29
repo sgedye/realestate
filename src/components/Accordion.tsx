@@ -1,13 +1,12 @@
 import { useState } from "react";
 
-type questionAnswer = {
-  question: string;
-  answer: string;
+type ListItem = {
+  visibleContent: React.ReactNode;
+  hiddenContent: React.ReactNode;
 };
 
 interface AccordionProps {
-  list: questionAnswer[];
-  // children: React.ReactNode;
+  list: ListItem[];
 }
 
 export const Accordion = ({ list }: AccordionProps) => {
@@ -19,7 +18,6 @@ export const Accordion = ({ list }: AccordionProps) => {
         return (
           <AccordionItem
             key={idx}
-            index={idx}
             ariaExpanded={idx === activeIndex}
             item={item}
             onToggleAccordion={() => {
@@ -34,26 +32,27 @@ export const Accordion = ({ list }: AccordionProps) => {
 
 interface AccordionItemsProps {
   ariaExpanded: boolean;
-  item: questionAnswer;
-  index: number
+  item: ListItem;
   onToggleAccordion: () => void;
 }
 
 const AccordionItem = (props: AccordionItemsProps) => {
-  const { ariaExpanded, item, index, onToggleAccordion } = props;
+  const { ariaExpanded, item, onToggleAccordion } = props;
   return (
-    <div>
+    <article className="bg-gray-400 overflow-hidden rounded-lg mb-6">
       <button
         aria-expanded={ariaExpanded}
-        className="bg-red-300 w-full transition flex space-x-5 px-5 items-center h-16"
+        // className="bg-red-300 w-full transition flex space-x-5 px-5 items-center h-16"
+        className="block w-full"
         onClick={onToggleAccordion}
       >
-        {item.question}
+        {item.visibleContent}
       </button>
-      <div className={`px-5 pt-0 overflow-hidden ${ariaExpanded ? "" : "max-h-0"}`}
+      <section
+        className={`overflow-hidden ${ariaExpanded ? "max-h-full" : "max-h-0"}`}
       >
-        {item.answer}
-      </div>
-    </div>
+        {item.hiddenContent}
+      </section>
+    </article>
   );
-}
+};
