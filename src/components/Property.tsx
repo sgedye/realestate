@@ -1,6 +1,6 @@
 import { SvgIcon } from "./SvgIcons";
 
-interface PropertyProps {
+export interface PropertyProps {
   "web-scraper-order": string;
   "web-scraper-start-url": string;
   link: string;
@@ -131,12 +131,13 @@ export const Property = (props: PropertyProps) => {
         </div>
       </div>
       <div className="">
-        <iframe
+        {/* <iframe
           width={400}
           height={400}
           src={`https://maps.google.com/maps?q=${mapAddress}&z=13&output=embed`}
-        ></iframe>
-      </div>
+        ></iframe> */}
+      </div>      
     </article>
   );
 };
+
