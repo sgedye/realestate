@@ -11,12 +11,13 @@ function App() {
     useState<ScrapedPropertyType[]>(townhouses);
 
   const handleUpdateSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchFilter(e.target.value);
-    if (e.target.value === "") {
+    const searchInput = e.target.value;
+    setSearchFilter(searchInput);
+    if (searchInput === "") {
       setFilteredResults(townhouses);
     } else {
       setFilteredResults(
-        townhouses.filter((n) => n.address.includes(e.target.value))
+        townhouses.filter((n) => n.address.toLowerCase().includes(searchInput.toLowerCase()))
       );
     }
   };
@@ -30,7 +31,7 @@ function App() {
       />
       <Accordion
         list={[...filteredResults].slice(0, 8).map((n) => ({
-          visibleContent: <Property key={n.property_id} {...n} />,
+          visibleContent: <Property key={n.property_id} {...n} searchFilter={searchFilter} />,
           hiddenContent: <PropertyDetails key={n.property_id} {...n} />,
         }))}
       />

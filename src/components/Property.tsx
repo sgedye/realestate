@@ -1,7 +1,9 @@
 import { SvgIcon } from "./SvgIcons";
 import type { ScrapedPropertyType } from "../types";
 
-interface PropertyProps extends ScrapedPropertyType {};
+interface PropertyProps extends ScrapedPropertyType {
+  searchFilter: string;
+}
 
 export const Property = (props: PropertyProps) => {
   const mapAddress = props.address.replaceAll(" ", "%20");
@@ -21,6 +23,13 @@ export const Property = (props: PropertyProps) => {
     console.log("deleting property id: ", id);
   };
 
+  const regexp = new RegExp(props.searchFilter, "i");
+  const searchedAddress = props.address.replace(
+    regexp,
+    (match) => `<mark>${match}</mark>`
+  );
+
+  // console.log(addressFirst, addressLast);
   return (
     <section className="flex flex-col lg:flex-row bg-gray-400 gap-2">
       <img
@@ -35,7 +44,11 @@ export const Property = (props: PropertyProps) => {
           {props.type} - {props.title}
         </h1>
         <h2>{props.subtitle}</h2>
-        <h3>{props.address}</h3>
+        <h3
+          dangerouslySetInnerHTML={{
+            __html: `<span>${searchedAddress}</span>`,
+          }}
+        ></h3>
         <div className="flex flex-row gap-2">
           <div aria-label={`${props.bedrooms} bedrooms`}>
             <span className="text-xl">{props.bedrooms || "?"}</span>
@@ -121,8 +134,7 @@ export const Property = (props: PropertyProps) => {
           height={400}
           src={`https://maps.google.com/maps?q=${mapAddress}&z=13&output=embed`}
         ></iframe> */}
-      </div>      
+      </div>
     </section>
   );
 };
-
