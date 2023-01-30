@@ -19,7 +19,7 @@ export const Property = (props: PropertyProps) => {
     .replace("avenue", "ave")
     .replace("terrace", "tce");
 
-  const showConfirmDelete = (id: number) => {
+  const showConfirmDelete = (id: string) => {
     console.log("deleting property id: ", id);
   };
 
@@ -29,7 +29,6 @@ export const Property = (props: PropertyProps) => {
     (match) => `<mark>${match}</mark>`
   );
 
-  // console.log(addressFirst, addressLast);
   return (
     <section className="flex flex-col lg:flex-row bg-gray-400 gap-2">
       <img
@@ -40,6 +39,7 @@ export const Property = (props: PropertyProps) => {
         height={200}
       />
       <div className="flex flex-col grow gap-2 text-left p-4">
+        <small>Property ID: {props.property_id}</small>
         <h1 className="text-xl">
           {props.type} - {props.title}
         </h1>
@@ -94,7 +94,7 @@ export const Property = (props: PropertyProps) => {
             />
           </div>
         </div>
-        <div className="flex flex-row gap-4 mt-auto">
+        <div className="flex flex-wrap gap-4 mt-auto">
           <div>
             <a
               href={props["link-href"]}
@@ -121,7 +121,7 @@ export const Property = (props: PropertyProps) => {
             <button
               className="px-4 py-2 space-x-3 text-sm border rounded-lg dark:text-red-200 dark:border-red-200
  hover:bg-red-100 dark:hover:bg-red-700"
-              onClick={() => showConfirmDelete(Number(props.property_id))}
+              onClick={() => showConfirmDelete(props.property_id)}
             >
               Remove from list
             </button>
