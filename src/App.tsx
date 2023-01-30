@@ -8,10 +8,10 @@ import townhouses from "./data/townhouses.json";
 function App() {
   const [showHidden, setShowHidden] = useState<boolean>(false);
   const [searchFilter, setSearchFilter] = useState<string>("");
-  const [hiddenProperties, setHiddenProperties] = useState<string[]>([
-    "140267667",
-    "141240832",
-  ]);
+  const [hiddenProperties, setHiddenProperties] = useState<string[]>(() => {
+    const jsonStorage = localStorage.getItem("hidden_properties");
+    return jsonStorage ? JSON.parse(jsonStorage) : [];
+  });
   const [filteredResults, setFilteredResults] = useState<ScrapedPropertyType[]>(
     townhouses.filter(
       (n) => hiddenProperties.includes(n.property_id) === showHidden
@@ -34,7 +34,16 @@ function App() {
         )
       );
     }
-  }, [showHidden, searchFilter]);
+  }, [showHidden, searchFilter, hiddenProperties]);
+
+  const handleShowHideProperty = (id: string) => {
+    if (hiddenProperties.includes(id)) {
+      setHiddenProperties((prev) => prev.filter((n) => n !== id));
+    } else {
+      setHiddenProperties((prev) => [...prev, id]);
+    }
+    localStorage.setItem("hidden_properties", JSON.stringify(hiddenProperties));
+  };
 
   return (
     <div className="container mx-auto my-8">
@@ -48,7 +57,13 @@ function App() {
       <Accordion
         list={[...filteredResults].slice(0, 8).map((n) => ({
           visibleContent: (
-            <Property key={n.property_id} {...n} searchFilter={searchFilter} />
+            <Property
+              key={n.property_id}
+              {...n}
+              searchFilter={searchFilter}
+              showHidden={showHidden}
+              onShowHideProperty={handleShowHideProperty}
+            />
           ),
           hiddenContent: <PropertyDetails key={n.property_id} {...n} />,
         }))}

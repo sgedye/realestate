@@ -3,10 +3,11 @@ import type { ScrapedPropertyType } from "../types";
 
 interface PropertyProps extends ScrapedPropertyType {
   searchFilter: string;
+  showHidden: boolean;
+  onShowHideProperty: (id: string) => void;
 }
 
 export const Property = (props: PropertyProps) => {
-  const mapAddress = props.address.replaceAll(" ", "%20");
   const propertyBaseUrl = "https://www.realestate.com.au/property/";
   const propertyPrefix = /^\d+\/\d+/.test(props.address) ? "unit-" : "";
   const propertyAddressUrl = props.address
@@ -18,10 +19,6 @@ export const Property = (props: PropertyProps) => {
     .replace("place", "pl")
     .replace("avenue", "ave")
     .replace("terrace", "tce");
-
-  const showConfirmDelete = (id: string) => {
-    console.log("deleting property id: ", id);
-  };
 
   const regexp = new RegExp(props.searchFilter, "i");
   const searchedAddress = props.address.replace(
@@ -117,23 +114,21 @@ export const Property = (props: PropertyProps) => {
               Link to past sales
             </a>
           </div>
-          <div className="ml-auto">
-            <button
-              className="px-4 py-2 space-x-3 text-sm border rounded-lg dark:text-red-200 dark:border-red-200
- hover:bg-red-100 dark:hover:bg-red-700"
-              onClick={() => showConfirmDelete(props.property_id)}
-            >
-              Remove from list
-            </button>
-          </div>
         </div>
       </div>
-      <div className="">
-        {/* <iframe
-          width={400}
-          height={400}
-          src={`https://maps.google.com/maps?q=${mapAddress}&z=13&output=embed`}
-        ></iframe> */}
+      <div className="p-4">
+        <button type="button"
+          className="px-4 py-2 space-x-3 text-sm border rounded-lg dark:text-red-200 dark:border-red-200
+ hover:bg-red-100 dark:hover:bg-red-700"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            props.onShowHideProperty(props.property_id);
+          }}
+          title={`${props.showHidden ? "Show" : "Hide"} property`}
+        >
+          X
+        </button>{" "}
       </div>
     </section>
   );
