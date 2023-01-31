@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 
 import { Accordion, Filters, Property, PropertyDetails } from "./components";
-import type { ScrapedPropertyType } from "./types";
+import { FavoriteLevelEnum, ScrapedPropertyType } from "./types";
 
 import townhouses from "./data/townhouses.json";
 
 function App() {
   const [showHidden, setShowHidden] = useState<boolean>(false);
+  const [favouriteLevel, setFavouriteLevel] = useState<FavoriteLevelEnum>(
+    FavoriteLevelEnum.None
+  );
   const [searchFilter, setSearchFilter] = useState<string>("");
   const [hiddenProperties, setHiddenProperties] = useState<string[]>(() => {
     const jsonStorage = localStorage.getItem("hidden_properties");
@@ -45,14 +48,20 @@ function App() {
     localStorage.setItem("hidden_properties", JSON.stringify(hiddenProperties));
   };
 
+  const handleFavouriteProperty = (id: string) => {
+    return;
+  };
+
   return (
     <div className="container mx-auto my-8">
       <Filters
         results={[...townhouses].slice(0, 8)}
         showHidden={showHidden}
         searchFilter={searchFilter}
-        onUpdateSearch={(e) => setSearchFilter(e.target.value)}
-        onToggleHidden={() => setShowHidden((prev) => !prev)}
+        favouriteLevel={favouriteLevel}
+        setSearchFilter={setSearchFilter}
+        setShowHidden={setShowHidden}
+        setFavouriteLevel={setFavouriteLevel}
       />
       <Accordion
         list={[...filteredResults].slice(0, 8).map((n) => ({
@@ -62,7 +71,9 @@ function App() {
               {...n}
               searchFilter={searchFilter}
               showHidden={showHidden}
+              favouriteLevel={favouriteLevel} // This needs to come from merged object / per property.
               onShowHideProperty={handleShowHideProperty}
+              onFavouriteProperty={handleFavouriteProperty}
             />
           ),
           hiddenContent: <PropertyDetails key={n.property_id} {...n} />,

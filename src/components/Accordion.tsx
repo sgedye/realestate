@@ -40,14 +40,14 @@ const AccordionItem = (props: AccordionItemsProps) => {
   const { ariaExpanded, item, onToggleAccordion } = props;
   return (
     <article className="bg-gray-400 overflow-hidden rounded-lg mb-6">
-      <button
+      <section
         aria-expanded={ariaExpanded}
         // className="bg-red-300 w-full transition flex space-x-5 px-5 items-center h-16"
         className="block w-full"
         onClick={onToggleAccordion}
       >
         {item.visibleContent}
-      </button>
+      </section>
       <section
         className={`overflow-hidden ${ariaExpanded ? "max-h-full" : "max-h-0"}`}
       >

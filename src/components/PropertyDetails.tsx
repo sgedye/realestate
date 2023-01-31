@@ -8,13 +8,13 @@ export const PropertyDetails = (props: PropertyDetailsProps) => {
   return (
     <div className="flex gap-4 p-4">
       <p>{(props.description || "").slice(0, 999)}</p>
-      <div className="-mr-4">
+      {/* <div className="-mr-4">
         <iframe
           width={400}
           height={400}
           src={`https://maps.google.com/maps?q=${mapAddress}&z=13&output=embed`}
         ></iframe>
-      </div>
+      </div> */}
     </div>
   );
 };

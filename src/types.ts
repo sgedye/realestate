@@ -15,3 +15,9 @@ export type ScrapedPropertyType = {
   building_size?: string;
   property_id: string;
 }
+
+export enum FavoriteLevelEnum {
+  "None" = 0,
+  "Like",
+  "Love"
+}
