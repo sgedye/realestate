@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Accordion, Filters, Property, PropertyDetails } from "./components";
+import { Accordion, Filters, Property, PropertyDetails, Todos } from "./components";
 import {
   ExtendedScrapedPropertyType,
   FavoriteLevelEnum,
@@ -126,7 +126,7 @@ function App() {
 
   return (
     <div className="container mx-auto my-8">
-      <h3>{JSON.stringify(favouritedProperties)}</h3>
+      <Todos />
       <Filters
         results={[...townhouses].slice(0, 8)}
         showHidden={showHidden}

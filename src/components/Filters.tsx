@@ -34,6 +34,7 @@ export const Filters = (props: FiltersProps) => {
             focus:ring-red-500 focus:border-red-500
             dark:focus:ring-red-500 dark:focus:border-red-500
           `}
+          style={{ minWidth: 368 }}
           value={props.searchFilter}
           placeholder="Search for an address"
           onChange={(e) => props.setSearchFilter(e.target.value)}
