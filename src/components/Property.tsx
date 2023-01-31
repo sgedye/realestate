@@ -1,5 +1,5 @@
 import { SvgIcon } from "./SvgIcons";
-import { FavoriteLevelEnum, ScrapedPropertyType } from "../types";
+import { FavoriteLevelEnum, FavouriteProperty, ScrapedPropertyType } from "../types";
 
 interface PropertyProps extends ScrapedPropertyType {
   searchFilter: string;
@@ -34,7 +34,7 @@ export const Property = (props: PropertyProps) => {
       : props.favouriteLevel === FavoriteLevelEnum.Like
       ? "pink"
       : "black";
-
+  
   return (
     <section className="flex flex-col lg:flex-row bg-gray-400 gap-2">
       <img
@@ -125,13 +125,18 @@ export const Property = (props: PropertyProps) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-row flex-wrap content-start gap-3 p-4">
+      <div className="flex flex-row gap-2 p-4">
         <button
           type="button"
-          className="p-3 space-x-3 text-sm border rounded-lg border-0
+          className="p-2 self-start rounded-lg
           hover:bg-red-100 dark:hover:bg-red-700 hover:bg-opacity-50 dark:hover:bg-opacity-50"
-          onClick={() => props.onShowHideProperty(props.property_id)}
-          title={`${props.showHidden ? "Show" : "Hide"} property`}
+          title="Change favourite level of property"
+          aria-label="Change favourite level of property"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            props.onFavouriteProperty(props.property_id);
+          }}
         >
           <SvgIcon
             aria-hidden
@@ -143,10 +148,15 @@ export const Property = (props: PropertyProps) => {
         </button>
         <button
           type="button"
-          className="p-3 space-x-3 text-sm border rounded-lg dark:text-red-200 dark:border-red-200
+          className="p-2 border self-start rounded-lg dark:text-red-200 dark:border-red-200
           hover:bg-red-100 dark:hover:bg-red-700"
-          onClick={() => props.onShowHideProperty(props.property_id)}
           title={`${props.showHidden ? "Show" : "Hide"} property`}
+          aria-label={`${props.showHidden ? "Show" : "Hide"} property`}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            props.onShowHideProperty(props.property_id);
+          }}
         >
           <SvgIcon
             aria-hidden

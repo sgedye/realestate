@@ -16,6 +16,15 @@ export type ScrapedPropertyType = {
   property_id: string;
 }
 
+export interface ExtendedScrapedPropertyType extends ScrapedPropertyType {
+  favouriteLevel: FavoriteLevelEnum;
+}
+
+export interface FavouriteProperty {
+  id: string;
+  level: FavoriteLevelEnum;
+}
+
 export enum FavoriteLevelEnum {
   "None" = 0,
   "Like",

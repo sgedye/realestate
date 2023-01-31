@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 
 import { Accordion, Filters, Property, PropertyDetails } from "./components";
-import { FavoriteLevelEnum, ScrapedPropertyType } from "./types";
+import {
+  ExtendedScrapedPropertyType,
+  FavoriteLevelEnum,
+  FavouriteProperty,
+  ScrapedPropertyType,
+} from "./types";
 
 import townhouses from "./data/townhouses.json";
 
@@ -15,29 +20,75 @@ function App() {
     const jsonStorage = localStorage.getItem("hidden_properties");
     return jsonStorage ? JSON.parse(jsonStorage) : [];
   });
+
+  const [favouritedProperties, setFavouritedProperties] = useState<
+    FavouriteProperty[]
+  >(() => {
+    const jsonStorage = localStorage.getItem("favourited_properties");
+    return jsonStorage ? JSON.parse(jsonStorage) : [];
+  });
   const [filteredResults, setFilteredResults] = useState<ScrapedPropertyType[]>(
     townhouses.filter(
       (n) => hiddenProperties.includes(n.property_id) === showHidden
     )
   );
 
+  // Split this useEffect up to get a mergedPropertyList, then work with that.
   useEffect(() => {
+    const favouritedList = Object.values(favouritedProperties);
+    const extendedPropertyList: ExtendedScrapedPropertyType[] = [
+      ...townhouses,
+    ].map((n) => {
+      return {
+        ...n,
+        favouriteLevel:
+          favouritedList.find((x) => x.id === n.property_id)?.level ||
+          FavoriteLevelEnum.None,
+      };
+    });
+
+    let myFilteredList: ExtendedScrapedPropertyType[] = [];
+    switch (favouriteLevel) {
+      case FavoriteLevelEnum.Love: {
+        myFilteredList = [...extendedPropertyList].filter(
+          (n) => n.favouriteLevel >= FavoriteLevelEnum.Love
+        );
+        break;
+      }
+      case FavoriteLevelEnum.Like: {
+        myFilteredList = [...extendedPropertyList].filter(
+          (n) => n.favouriteLevel >= FavoriteLevelEnum.Like
+        );
+        break;
+      }
+      default: {
+        myFilteredList = [...extendedPropertyList];
+        break;
+      }
+    }
+
     if (searchFilter === "") {
       setFilteredResults(
-        townhouses.filter(
+        myFilteredList.filter(
           (n) => hiddenProperties.includes(n.property_id) === showHidden
         )
       );
     } else {
       setFilteredResults(
-        townhouses.filter(
+        myFilteredList.filter(
           (n) =>
             hiddenProperties.includes(n.property_id) === showHidden &&
             n.address.toLowerCase().includes(searchFilter.toLowerCase())
         )
       );
     }
-  }, [showHidden, searchFilter, hiddenProperties]);
+  }, [
+    showHidden,
+    searchFilter,
+    hiddenProperties,
+    favouriteLevel,
+    favouritedProperties,
+  ]);
 
   const handleShowHideProperty = (id: string) => {
     if (hiddenProperties.includes(id)) {
@@ -49,11 +100,33 @@ function App() {
   };
 
   const handleFavouriteProperty = (id: string) => {
-    return;
+    const prevProperty = favouritedProperties.find((n) => n.id === id) || null;
+    if (prevProperty) {
+      const level = ((prevProperty.level + 1) % 3) as FavoriteLevelEnum;
+      const updatedList: FavouriteProperty[] = [...favouritedProperties].map(
+        (n) => {
+          return n.id === id ? { id, level } : n;
+        }
+      );
+      setFavouritedProperties(updatedList);
+    } else {
+      setFavouritedProperties((prev) => [
+        ...prev,
+        {
+          id,
+          level: FavoriteLevelEnum.Like,
+        },
+      ]);
+    }
+    localStorage.setItem(
+      "favourited_properties",
+      JSON.stringify(favouritedProperties)
+    );
   };
 
   return (
     <div className="container mx-auto my-8">
+      <h3>{JSON.stringify(favouritedProperties)}</h3>
       <Filters
         results={[...townhouses].slice(0, 8)}
         showHidden={showHidden}
@@ -71,7 +144,10 @@ function App() {
               {...n}
               searchFilter={searchFilter}
               showHidden={showHidden}
-              favouriteLevel={favouriteLevel} // This needs to come from merged object / per property.
+              favouriteLevel={
+                favouritedProperties.find((x) => x.id === n.property_id)
+                  ?.level || FavoriteLevelEnum.None
+              }
               onShowHideProperty={handleShowHideProperty}
               onFavouriteProperty={handleFavouriteProperty}
             />
