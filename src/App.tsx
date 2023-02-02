@@ -187,7 +187,9 @@ function App() {
             hiddenContent: <PropertyDetails key={n.property_id} {...n} />,
           }))}
         />
-        <EditPropertyModal {...editPropertyModal} propertyId={selectedId} />
+        {editPropertyModal.show && (
+          <EditPropertyModal {...editPropertyModal} propertyId={selectedId} />
+        )}
       </div>
     </Context.Provider>
   );

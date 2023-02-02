@@ -1,5 +1,6 @@
+import { useEffect, useRef } from "react";
+import { Modal } from ".";
 import { UseModalReturn } from "../hooks/useModal";
-import { SvgIcon } from "./SvgIcons";
 
 interface EditPropertyModalProps extends UseModalReturn {
   propertyId: string;
@@ -8,65 +9,53 @@ interface EditPropertyModalProps extends UseModalReturn {
 export const EditPropertyModal = (
   props: EditPropertyModalProps
 ): JSX.Element | null => {
-  if (!props.show || !props.propertyId) {
-    return null;
-  }
+  const modalTitle = `Editing Property - ${props.propertyId}`;
+  const firstInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => firstInputRef.current?.focus(), []);
 
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm w-screen h-screen flex"
-      tabIndex={-1}
-    >
-      <div className="w-1/2 h-96 self-center mx-auto">
-        <div className="w-full h-full flex flex-col bg-white rounded-md">
-          <div className="flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200">
-            <h5 className="text-xl font-medium leading-normal text-gray-800">
-              Editing Property - {props.propertyId}
-            </h5>
-            <button
-              type="button"
-              className="border-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75"
-              aria-label="Close"
-              onClick={props.onHide}
-            >
-              <SvgIcon
-                aria-hidden
-                icon="ri-close-fill"
-                width={30}
-                height={30}
-              />
-            </button>
+    <Modal>
+      <Modal.Header title={modalTitle} {...props} />
+      <Modal.Body>
+        {inputArray.map((n, idx) => (
+          <div key={idx} className="flex flex-col col-span-1">
+            <label htmlFor={n} className="text-gray-600">
+              {n}
+            </label>
+            <input
+              type="text"
+              id={n + "123"}
+              name={n + "123"}
+              ref={idx === 0 ? firstInputRef : null}
+              placeholder="input field"
+              className="mb-2 p-2 rounded-md"
+            />
           </div>
-          <div className="flex flex-grow p-4">Modal body text goes here.</div>
-          <div className="flex flex-shrink-0 flex-wrap items-center justify-between p-4 border-t border-gray-200">
-            <button
-              type="button"
-              className="px-6 py-2.5
-                text-white font-medium text-xs leading-tight uppercase
-                bg-gray-600 shadow-md rounded
-                hover:bg-gray-700 hover:shadow-lg
-                focus:bg-gray-700 focus:shadow-lg focus:outline-none focus:ring-0
-                active:bg-gray-800 active:shadow-lg
-                transition duration-150 ease-in-out"
-              onClick={props.onHide}
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              className="px-6 py-2.5
-              text-white font-medium text-xs leading-tight uppercase
-              bg-blue-600 shadow-md rounded
-              hover:bg-blue-700 hover:shadow-lg
-              focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
-              active:bg-blue-800 active:shadow-lg
-              transition duration-150 ease-in-out"
-            >
-              Save changes
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+        ))}
+      </Modal.Body>
+      <Modal.Footer onSave={() => console.log("saving data...")} {...props} />
+    </Modal>
   );
 };
+
+const inputArray = [
+  "address",
+  "imageSrc",
+  "title",
+  "subtitle",
+  "beds",
+  "bathrooms",
+  "carbays",
+  "dateAdded",
+  "askingPrice",
+  "lastSoldDate",
+  "lastSoldPrice",
+  "strataFees",
+  "groupOf",
+  "land",
+  "floorArea",
+  "yearBuilt",
+  "description",
+  "initialThoughts",
+];
