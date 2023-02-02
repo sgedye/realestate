@@ -1,16 +1,47 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext } from "react";
 
-import { Accordion, Filters, Property, PropertyDetails, Todos } from "./components";
 import {
+  Accordion,
+  Filters,
+  Property,
+  PropertyDetails,
+  Todos,
+} from "./components";
+
+import { FavoriteLevelEnum } from "./types";
+import type {
   ExtendedScrapedPropertyType,
-  FavoriteLevelEnum,
   FavouriteProperty,
   ScrapedPropertyType,
 } from "./types";
 
 import townhouses from "./data/townhouses.json";
+import { EditPropertyModal } from "./components/EditPropertyModal";
+import { useModal } from "./hooks/useModal";
+
+export const Context = createContext({
+  selectedId: "",
+  setSelectedId: (() => {}) as React.Dispatch<React.SetStateAction<string>>,
+  showEditModal: () => {},
+});
 
 function App() {
+  const [selectedId, setSelectedId] = useState("");
+  const editPropertyModal = useModal();
+  const contextState = {
+    selectedId,
+    setSelectedId,
+    showEditModal: editPropertyModal.onShow,
+  };
+
+  useEffect(() => {
+    if (editPropertyModal.show) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [editPropertyModal.show]);
+
   const [showHidden, setShowHidden] = useState<boolean>(false);
   const [favouriteLevel, setFavouriteLevel] = useState<FavoriteLevelEnum>(
     FavoriteLevelEnum.None
@@ -125,37 +156,40 @@ function App() {
   };
 
   return (
-    <div className="container mx-auto my-8">
-      <Todos />
-      <Filters
-        results={[...townhouses].slice(0, 8)}
-        showHidden={showHidden}
-        searchFilter={searchFilter}
-        favouriteLevel={favouriteLevel}
-        setSearchFilter={setSearchFilter}
-        setShowHidden={setShowHidden}
-        setFavouriteLevel={setFavouriteLevel}
-      />
-      <Accordion
-        list={[...filteredResults].slice(0, 8).map((n) => ({
-          visibleContent: (
-            <Property
-              key={n.property_id}
-              {...n}
-              searchFilter={searchFilter}
-              showHidden={showHidden}
-              favouriteLevel={
-                favouritedProperties.find((x) => x.id === n.property_id)
-                  ?.level || FavoriteLevelEnum.None
-              }
-              onShowHideProperty={handleShowHideProperty}
-              onFavouriteProperty={handleFavouriteProperty}
-            />
-          ),
-          hiddenContent: <PropertyDetails key={n.property_id} {...n} />,
-        }))}
-      />
-    </div>
+    <Context.Provider value={contextState}>
+      <div className="container mx-auto my-8">
+        <Todos />
+        <Filters
+          results={[...townhouses].slice(0, 8)}
+          showHidden={showHidden}
+          searchFilter={searchFilter}
+          favouriteLevel={favouriteLevel}
+          setSearchFilter={setSearchFilter}
+          setShowHidden={setShowHidden}
+          setFavouriteLevel={setFavouriteLevel}
+        />
+        <Accordion
+          list={[...filteredResults].slice(0, 8).map((n) => ({
+            visibleContent: (
+              <Property
+                key={n.property_id}
+                {...n}
+                searchFilter={searchFilter}
+                showHidden={showHidden}
+                favouriteLevel={
+                  favouritedProperties.find((x) => x.id === n.property_id)
+                    ?.level || FavoriteLevelEnum.None
+                }
+                onShowHideProperty={handleShowHideProperty}
+                onFavouriteProperty={handleFavouriteProperty}
+              />
+            ),
+            hiddenContent: <PropertyDetails key={n.property_id} {...n} />,
+          }))}
+        />
+        <EditPropertyModal {...editPropertyModal} propertyId={selectedId} />
+      </div>
+    </Context.Provider>
   );
 }
 
