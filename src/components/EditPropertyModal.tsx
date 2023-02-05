@@ -103,10 +103,10 @@ export const EditPropertyModal = (
       </Modal.Body>
       <Modal.Footer
         onSave={() => {
-          console.log("saving data..asdf.", values);
+          console.log("saving data...", values);
 
           if (formRef.current) {
-            console.log(formRef.current);
+            // console.log(formRef.current);
             // formRef.current.submit();
           }
         }}

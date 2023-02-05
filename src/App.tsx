@@ -58,11 +58,7 @@ function App() {
     const jsonStorage = localStorage.getItem("favourited_properties");
     return jsonStorage ? JSON.parse(jsonStorage) : [];
   });
-  const [filteredResults, setFilteredResults] = useState<ScrapedPropertyType[]>(
-    townhouses.filter(
-      (n) => hiddenProperties.includes(n.property_id) === showHidden
-    )
-  );
+  const [filteredResults, setFilteredResults] = useState<ExtendedScrapedPropertyType[]>([]);
 
   // Split this useEffect up to get a mergedPropertyList, then work with that.
   useEffect(() => {
@@ -187,9 +183,17 @@ function App() {
             hiddenContent: <PropertyDetails key={n.property_id} {...n} />,
           }))}
         />
-        {editPropertyModal.show && (
-          <EditPropertyModal {...editPropertyModal} propertyId={selectedId} />
-        )}
+        {(() => {
+          const property = filteredResults.find(n => n.property_id === selectedId);
+          if (property && editPropertyModal.show) {
+            return <EditPropertyModal
+              {...editPropertyModal}
+              property={property}
+            />;
+          }
+          return null
+
+        })()}
       </div>
     </Context.Provider>
   );
