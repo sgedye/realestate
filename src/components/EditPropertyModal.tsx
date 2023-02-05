@@ -1,52 +1,132 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { Modal } from ".";
 import { UseModalReturn } from "../hooks/useModal";
 
+import {
+  ExtendedScrapedPropertyType,
+  FavoriteLevelEnum,
+  ScrapedPropertyType,
+} from "../types";
+
 interface EditPropertyModalProps extends UseModalReturn {
-  propertyId: string;
+  property: ExtendedScrapedPropertyType;
 }
 
 export const EditPropertyModal = (
   props: EditPropertyModalProps
 ): JSX.Element | null => {
-  const modalTitle = `Editing Property - ${props.propertyId}`;
-  const firstInputRef = useRef<HTMLInputElement>(null);
+  const modalTitle = `Editing Property - ${props.property.property_id}`;
 
+  const formRef = useRef<HTMLFormElement>(null);
+  const firstInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => firstInputRef.current?.focus(), []);
+
+  const [values, setValues] = useState<ExtendedScrapedPropertyType>({
+    ...props.property,
+    favouriteLevel: props.property.favouriteLevel || FavoriteLevelEnum.None,
+  });
+
+  const propertyFields = Object.keys(props.property)
+    .map((key) => {
+      if (ignoreList.includes(key)) {
+        return ["", undefined];
+      }
+      return [key, props.property[key as keyof ScrapedPropertyType]];
+    })
+    .filter((n) => !!n[0]) as string[][];
+
+  const mergedPropertyFields = [...propertyFields, ...addList];
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("submitting form...", e.target);
+  };
 
   return (
     <Modal>
       <Modal.Header title={modalTitle} {...props} />
       <Modal.Body>
-        {inputArray.map((n, idx) => (
-          <div key={idx} className="flex flex-col col-span-1">
-            <label htmlFor={n} className="text-gray-600">
-              {n}
-            </label>
-            <input
-              type="text"
-              id={n + "123"}
-              name={n + "123"}
-              ref={idx === 0 ? firstInputRef : null}
-              placeholder="input field"
-              className="mb-2 p-2 rounded-md"
-            />
-          </div>
-        ))}
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          className="grid grid-cols-2 gap-4 p-4"
+        >
+          {mergedPropertyFields.map(([key], idx) => {
+            if (key === "initialThoughts") {
+              return (
+                <div key={idx} className="flex flex-col col-span-2">
+                  <label htmlFor={key} className="text-gray-600">
+                    {key}
+                  </label>
+                  <textarea
+                    id={key}
+                    name={key}
+                    rows={3}
+                    className="mb-2 p-2 rounded-md"
+                    value={values[key as keyof ScrapedPropertyType] || ""}
+                    onChange={(e) => {
+                      setValues((prev) => ({
+                        ...prev,
+                        [key]: e.target.value,
+                      }));
+                    }}
+                  />
+                </div>
+              );
+            } else {
+              return (
+                <div key={idx} className="flex flex-col col-span-1">
+                  <label htmlFor={key} className="text-gray-600">
+                    {key}
+                  </label>
+                  <input
+                    type="text"
+                    id={key}
+                    name={key}
+                    ref={idx === 0 ? firstInputRef : null}
+                    placeholder={key}
+                    className="mb-2 p-2 rounded-md"
+                    value={values[key as keyof ScrapedPropertyType] || ""}
+                    onChange={(e) => {
+                      setValues((prev) => ({
+                        ...prev,
+                        [key]: e.target.value,
+                      }));
+                    }}
+                  />
+                </div>
+              );
+            }
+          })}
+        </form>
       </Modal.Body>
-      <Modal.Footer onSave={() => console.log("saving data...")} {...props} />
+      <Modal.Footer
+        onSave={() => {
+          console.log("saving data...", values);
+
+          if (formRef.current) {
+            // console.log(formRef.current);
+            // formRef.current.submit();
+          }
+        }}
+        {...props}
+      />
     </Modal>
   );
 };
 
-const inputArray = [
-  "address",
-  "imageSrc",
-  "title",
-  "subtitle",
-  "beds",
-  "bathrooms",
-  "carbays",
+const ignoreList = [
+  "web-scraper-order",
+  "web-scraper-start-url",
+  "link",
+  "link-href",
+  "image-src",
+  "property_id",
+  "favouriteLevel",
+];
+
+const addList = [
   "dateAdded",
   "askingPrice",
   "lastSoldDate",
@@ -56,6 +136,5 @@ const inputArray = [
   "land",
   "floorArea",
   "yearBuilt",
-  "description",
   "initialThoughts",
-];
+].map((n) => [n, ""]);
