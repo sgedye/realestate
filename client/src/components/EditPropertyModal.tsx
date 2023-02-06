@@ -43,13 +43,40 @@ export const EditPropertyModal = (
     console.log("submitting form...", e.target);
   };
 
+  const postDataToServer = () => {
+    fetch("http://127.0.0.1:5000/api/v1", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "post",
+      body: JSON.stringify(values),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw Error("Unhandled network error");
+      })
+      .then((data) => {
+        if (data.success) {
+          console.log("data successfully posted");
+        } else {
+          throw Error("Unhandled post error");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   return (
     <Modal>
       <Modal.Header title={modalTitle} {...props} />
       <Modal.Body>
         <form
           ref={formRef}
-          onSubmit={handleSubmit}
+          // onSubmit={handleSubmit}
           className="grid grid-cols-2 gap-4 p-4"
         >
           {mergedPropertyFields.map(([key], idx) => {
@@ -104,11 +131,12 @@ export const EditPropertyModal = (
       <Modal.Footer
         onSave={() => {
           console.log("saving data...", values);
+          postDataToServer()
 
-          if (formRef.current) {
+          // if (formRef.current) {
             // console.log(formRef.current);
             // formRef.current.submit();
-          }
+          // }
         }}
         {...props}
       />
