@@ -15,7 +15,7 @@ import type {
   ScrapedPropertyType,
 } from "./types";
 
-import townhouses from "./data/townhouses.json";
+import townhouses from "../../server/data/townhouses.json";
 import { EditPropertyModal } from "./components/EditPropertyModal";
 import { useModal } from "./hooks/useModal";
 
