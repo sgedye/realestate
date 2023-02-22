@@ -2,7 +2,7 @@ const fs = require("fs-extra");
 const path = require("path");
 
 const mergedData = require("../data/merged.json");
-const newData = require("../data/scraped_data-2023_02_01.json");
+const newData = require("../data/scraped_data-2023_02_22.json");
 
 (() => {
   const hasBackedUpData = backupPreMergeData();
