@@ -70,7 +70,7 @@ function getSortedMergeData() {
       existingPropertiesConflicts.push(newProperty.property_id);
       // Temporarily Changing the Property Id to be updated later.
       const alteredNewProperty = { ...newProperty };
-      alteredNewProperty.property_id += "_CONFICT";
+      alteredNewProperty.property_id += "_CONFLICT";
       mergedData.push(alteredNewProperty);
       return;
     }
