@@ -1,12 +1,12 @@
 {
   "license": "UNLICENSED",
   "private": true,
-  
   "dependencies": {
     "concurrently": "^7.0.0"
   },
   "scripts": {
-    "start": "concurrently \"cd ./server && yarn server --host\" \"cd ./client && yarn dev\""
+    "start": "concurrently \"cd ./server && yarn server --host\" \"cd ./client && yarn dev\"",
+    "merge": "cd server && yarn merge"
   },
   "devDependencies": {
     "fs-extra": "^11.1.0"
