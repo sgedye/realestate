@@ -54,29 +54,62 @@ function getSortedMergeData() {
   let uniquePropertiesAdded = 0;
   let identialPropertiesIgnored = 0;
   let existingPropertiesConflicts = [];
+  let conflictingProps = [];
 
+  let test2 = 0;
   newData.forEach((newProperty) => {
     const mergedDatum = mergedData.find(
       (n) => n.property_id === newProperty.property_id
     );
 
+    if (test2 > 9) {
+      return
+    }
+    test2++
+
+    // New properties are just added to the list
     if (mergedDatum === undefined) {
       uniquePropertiesAdded++;
       mergedData.push(newProperty);
       return;
     }
 
-    if (JSON.stringify(mergedDatum) !== JSON.stringify(newProperty)) {
-      existingPropertiesConflicts.push(newProperty.property_id);
-      // Temporarily Changing the Property Id to be updated later.
-      const alteredNewProperty = { ...newProperty };
-      alteredNewProperty.property_id += "_CONFLICT";
-      mergedData.push(alteredNewProperty);
+    
+    // Do nothing with idential properties
+    if (JSON.stringify(mergedDatum) === JSON.stringify(newProperty)) {
+      identialPropertiesIgnored++;
       return;
     }
 
-    identialPropertiesIgnored++;
+    // Property already exists in merged data so we will merge it.
+
+    // Add in switch if web-scraper... is different do nothing || might be easier to do the ones that are the same.
+
+    const alteredNewProperty = { ...newProperty };
+    const newPropertyProps = Object.entries(alteredNewProperty);
+
+    let tempPropsConflictList = [];
+    tempPropsConflictList.push(alteredNewProperty.property_id)
+    let test = 0;
+    newPropertyProps.forEach(([key, value]) => {
+      if (mergedData[key] !== value && test < 10) {
+        tempPropsConflictList.push(key)
+      }
+      test++;
+    });
+
+    console.log(tempPropsConflictList)
+    
+    
+    existingPropertiesConflicts.push(newProperty.property_id);
+    conflictingProps.push(tempPropsConflictList.join("|"));
+
+    // Temporarily Changing the Property Id to be updated later.
+    alteredNewProperty.property_id += "_CONFLICT";
+    mergedData.push(alteredNewProperty);
     return;
+    
+
   });
 
   const valuesToLog = {
@@ -91,8 +124,14 @@ function getSortedMergeData() {
     return { "CONFLICT ID": n };
   });
 
+  
+  const conflictPropsToLog = conflictingProps.map((n) => {
+    return { "Prop": n };
+  });
+
   console.table(valuesToLog);
-  console.table(conflictsToLog);
+  // console.table(conflictsToLog);
+  // console.table(conflictPropsToLog);
 
   return [...mergedData].sort((a, b) => a.property_id - b.property_id);;
 }
