@@ -1,4 +1,4 @@
-import type { ScrapedPropertyType } from "../types";
+import type { ScrapedPropertyType } from "@shared/types";
 
 interface PropertyDetailsProps extends ScrapedPropertyType {}
 

@@ -1,16 +1,17 @@
 {
   "license": "UNLICENSED",
   "private": true,
-  "dependencies": {
-    "concurrently": "^7.0.0"
-  },
   "workspaces": [
     "client",
-    "server"
+    "server",
+    "shared"
   ],
   "scripts": {
     "start": "concurrently \"cd ./server && yarn server --host\" \"cd ./client && yarn dev\"",
     "merge": "cd server && yarn merge"
+  },
+  "dependencies": {
+    "concurrently": "^7.0.0"
   },
   "devDependencies": {
     "fs-extra": "^11.1.0"

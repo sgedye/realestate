@@ -4,6 +4,9 @@ export const Todos = (): JSX.Element => {
       <h1 className="font-bold">TO Dos:</h1>
       <ul className="list-disc pl-6">
         <li className="text-lg">
+          Fix client types -- use from shared.
+        </li>
+        <li className="text-lg">
           Look into performing CRUD on userData and store in a JSON file
           locally.
         </li>

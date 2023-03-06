@@ -1,4 +1,5 @@
 export * from "./Accordion"
+export * from "./EditPropertyModal"
 export * from "./Filters"
 export * from "./GenericModal"
 export * from "./Property"

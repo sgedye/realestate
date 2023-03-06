@@ -1,5 +1,5 @@
-import { FavoriteLevelEnum, ScrapedPropertyType } from "../types";
-import { SvgIcon } from "./SvgIcons";
+import { FavoriteLevelEnum, ScrapedPropertyType } from "@shared/types";
+import { SvgIcon } from "~/components";
 
 interface FiltersProps {
   results: ScrapedPropertyType[];

@@ -60,7 +60,6 @@ function getNewPropertiesToMerge() {
 function getSortedMergeData(newPropertiesToAdd: ScrapedPropertyDatum[]) {
   const preMergeNumberOfProperties = mergedData.length;
   let uniquePropertiesAdded = 0;
-  let identialPropertiesIgnored = 0;
   let existingPropertiesUpdated = 0
 
   const updatedMergedData: MergedPropertyDatum[] = JSON.parse(JSON.stringify(mergedData));

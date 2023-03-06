@@ -1,11 +1,12 @@
-import { SvgIcon } from "./SvgIcons";
+import { useContext } from "react";
 import {
   FavoriteLevelEnum,
   FavouriteProperty,
   ScrapedPropertyType,
-} from "../types";
-import { useContext } from "react";
-import { Context } from "../App";
+} from "@shared/types";
+
+import { SvgIcon } from "~/components";
+import { Context } from "~/App";
 
 interface PropertyProps extends ScrapedPropertyType {
   searchFilter: string;

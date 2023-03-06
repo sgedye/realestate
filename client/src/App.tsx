@@ -6,7 +6,8 @@ import {
   Property,
   PropertyDetails,
   Todos,
-} from "./components";
+  EditPropertyModal,
+} from "~/components";
 
 import {
   FavoriteLevelEnum,
@@ -16,8 +17,7 @@ import {
 } from "@shared/types";
 
 import townhouses from "../../server/data/townhouses.json";
-import { EditPropertyModal } from "./components/EditPropertyModal";
-import { useModal } from "./hooks/useModal";
+import { useModal } from "~/hooks";
 
 export const Context = createContext({
   selectedId: "",

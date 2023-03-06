@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "start": "node ./dist/index.js",
+    "start": "node ./dist/server/index.js",
     "server": "tsc && yarn start",
     "merge": "node ./dist/server/scripts/merge-scraped-json.js"
   },
@@ -23,7 +23,7 @@
     "@types/fs-extra": "^11.0.1",
     "@types/node": "^18.14.6",
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.1.2",
     "typescript": "^4.9.5"
   }
-  
 }

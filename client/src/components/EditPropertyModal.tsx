@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-import { Modal } from ".";
-import { UseModalReturn } from "../hooks/useModal";
+import { Modal } from "~/components";
+import { UseModalReturn } from "~/hooks";
 
 import {
   ExtendedScrapedPropertyType,

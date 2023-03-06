@@ -1,5 +1,5 @@
-import { UseModalReturn } from "../hooks/useModal";
-import { SvgIcon } from "./SvgIcons";
+import { UseModalReturn } from "~/hooks";
+import { SvgIcon } from "~/components";
 
 export const Modal = ({ children }: { children: React.ReactNode }) => {
   return (
