@@ -4,6 +4,10 @@
   "dependencies": {
     "concurrently": "^7.0.0"
   },
+  "workspaces": [
+    "client",
+    "server"
+  ],
   "scripts": {
     "start": "concurrently \"cd ./server && yarn server --host\" \"cd ./client && yarn dev\"",
     "merge": "cd server && yarn merge"
