@@ -8,12 +8,12 @@ import {
   Todos,
 } from "./components";
 
-import { FavoriteLevelEnum } from "./types";
-import type {
+import {
+  FavoriteLevelEnum,
   ExtendedScrapedPropertyType,
   FavouriteProperty,
   ScrapedPropertyType,
-} from "./types";
+} from "@shared/types";
 
 import townhouses from "../../server/data/townhouses.json";
 import { EditPropertyModal } from "./components/EditPropertyModal";
