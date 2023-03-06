@@ -2,18 +2,28 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "license": "UNLICENSED",
+  "type": "module",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "server": "nodemon index.js",
-    "merge": "node ./scripts/merge-scraped-json.cjs"
+    "build": "tsc",
+    "start": "node ./dist/index.js",
+    "server": "tsc && yarn start",
+    "merge": "node ./dist/server/scripts/merge-scraped-json.js"
   },
   "keywords": [],
   "author": "",
   "dependencies": {
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "fs-extra": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/fs-extra": "^11.0.1",
+    "@types/node": "^18.14.6",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
   }
+  
 }
