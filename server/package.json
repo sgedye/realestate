@@ -1,19 +1,16 @@
 {
-  "name": "server",
+  "name": "realestate-server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
   "license": "UNLICENSED",
-  "type": "module",
   "private": true,
+  "main": "index.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/server/index.js",
     "server": "tsc && yarn start",
     "merge": "node ./dist/server/scripts/merge-scraped-json.js"
   },
-  "keywords": [],
-  "author": "",
   "dependencies": {
     "express": "^4.17.3",
     "fs-extra": "^11.1.0"
