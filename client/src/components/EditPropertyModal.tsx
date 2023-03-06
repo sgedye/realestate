@@ -7,7 +7,7 @@ import {
   ExtendedScrapedPropertyType,
   FavoriteLevelEnum,
   ScrapedPropertyType,
-} from "../types";
+} from "@shared/types";
 
 interface EditPropertyModalProps extends UseModalReturn {
   property: ExtendedScrapedPropertyType;
@@ -131,11 +131,11 @@ export const EditPropertyModal = (
       <Modal.Footer
         onSave={() => {
           console.log("saving data...", values);
-          postDataToServer()
+          postDataToServer();
 
           // if (formRef.current) {
-            // console.log(formRef.current);
-            // formRef.current.submit();
+          // console.log(formRef.current);
+          // formRef.current.submit();
           // }
         }}
         {...props}

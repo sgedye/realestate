@@ -1,37 +1,12 @@
 import fs from "fs-extra";
+import type { MergedPropertyDatum, ScrapedPropertyDatum } from "@shared/types";
 
 const MAX_CHAR_LIMIT = 19000;
-
-type BasePropertyDatum = {
-  link: string;
-  'link-href': string;
-  address: string;
-  type: string;
-  'image-src': string;
-  description: string;
-  property_id: string;
-  building_size?: string;
-  bedrooms?: string;
-  bathrooms?: string;
-  carbays?: string;
-}
-
-type ScrapedPropertyDatum = BasePropertyDatum & {
-  title: string;
-  subtitle: string;
-  "web-scraper-order"?: string;
-  "web-scraper-start-url"?: string;
-}
-
-type MergedPropertyDatum = BasePropertyDatum & {
-  title: string[];
-  subtitle: string[];
-}
 
 const mergedData: MergedPropertyDatum[] = JSON.parse(fs.readFileSync('./data/merged.json', 'utf8')) || [];
 const newData: ScrapedPropertyDatum[] = JSON.parse(fs.readFileSync('./data/test.json', 'utf8')) || [];
 
-const init = () => {
+function init() {
   createBackupPreMergeData();
 
   const newPropertiesToAdd = getNewPropertiesToMerge();
@@ -49,7 +24,6 @@ const init = () => {
     }
   );
 };
-
 
 function createBackupPreMergeData() {
   try {

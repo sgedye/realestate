@@ -1,3 +1,31 @@
+export type BasePropertyDatum = {
+  link: string;
+  'link-href': string;
+  address: string;
+  type: string;
+  'image-src': string;
+  description: string;
+  property_id: string;
+  building_size?: string;
+  bedrooms?: string;
+  bathrooms?: string;
+  carbays?: string;
+}
+
+export type ScrapedPropertyDatum = BasePropertyDatum & {
+  title: string;
+  subtitle: string;
+  "web-scraper-order"?: string;
+  "web-scraper-start-url"?: string;
+}
+
+export type MergedPropertyDatum = BasePropertyDatum & {
+  title: string[];
+  subtitle: string[];
+}
+
+// old types
+
 export type ScrapedPropertyType = {
   "web-scraper-order": string;
   "web-scraper-start-url": string;
