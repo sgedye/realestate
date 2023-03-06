@@ -2,17 +2,17 @@ const fs = require("fs-extra");
 const path = require("path");
 
 const mergedData = require("../data/merged.json");
-const newData = require("../data/scraped_data-2023_02_22.json");
+// const newData = require("../data/scraped_data-2023_02_22.json");
+const newData = require("../data/test.json");
 
-(() => {
-  const hasBackedUpData = backupPreMergeData();
+const MAX_CHAR_LIMIT = 19000;
 
-  if (hasBackedUpData === false) {
-    console.log("\n\nBackup fail... stopping!\n\n");
-    return;
-  }
+const init = () => {
+  createBackupPreMergeData();
 
-  const sortedMergedData = getSortedMergeData();
+  const newPropertiesToAdd = getNewPropertiesToMerge();
+  console.log(newPropertiesToAdd[0]);
+  const sortedMergedData = getSortedMergeData(newPropertiesToAdd);
 
   fs.writeFile(
     path.resolve(__dirname, "../data/merged.json"),
@@ -25,10 +25,10 @@ const newData = require("../data/scraped_data-2023_02_22.json");
       }
     }
   );
-})();
+};
 
-function backupPreMergeData() {
-  let hasBackedUpData = false;
+
+function createBackupPreMergeData() {
   try {
     const now = new Date();
     const year = now.getFullYear();
@@ -42,78 +42,92 @@ function backupPreMergeData() {
     );
 
     console.log("Previous merged data saved in `_bak` folder");
-    hasBackedUpData = true;
   } catch (err) {
-    console.error(err);
+    console.error("Error: ", err);
+    throw new Error("Pre-merge backup fail... stopping merge.");
   }
-  return hasBackedUpData;
 }
 
-function getSortedMergeData() {
-  const preMergeProperties = mergedData.length;
+function getNewPropertiesToMerge() {
+  return newData.map((newDatum) => {
+    delete newDatum["web-scraper-order"];
+    delete newDatum["web-scraper-start-url"];
+    if (newDatum.description?.length > MAX_CHAR_LIMIT) {
+      newDatum.description =
+        newDatum.description?.substring(0, MAX_CHAR_LIMIT) + "...";
+    }
+    return newDatum;
+  });
+}
+
+function getSortedMergeData(newPropertiesToAdd) {
+  const preMergeNumberOfProperties = mergedData.length;
   let uniquePropertiesAdded = 0;
   let identialPropertiesIgnored = 0;
   let existingPropertiesConflicts = [];
   let conflictingProps = [];
 
-  let test2 = 0;
-  newData.forEach((newProperty) => {
-    const mergedDatum = mergedData.find(
-      (n) => n.property_id === newProperty.property_id
-    );
+  // If mergedData is empty copy everything, but make title and subtitles into arrays of strings.
+  // if (preMergeNumberOfProperties === 0) {
+  //   return newPropertiesToAdd.map((n) => ({
+  //     ...n,
+  //     title: n.title ? [n.title] : [],
+  //     subtitle: n.substring ? [n.subtitle] : [],
+  //   }));
+  // }
 
-    if (test2 > 9) {
-      return
-    }
-    test2++
+  const updatedMergedData = JSON.parse(JSON.stringify(mergedData));
+
+  newPropertiesToAdd.forEach((newProperty, idx) => {
+    const mergedDatum =
+      mergedData.find((n) => n.property_id === newProperty.property_id) || null;
+
+    console.log(idx, mergedDatum?.title || "new", mergedDatum);
+    console.log("MERGED", mergedData.length);
 
     // New properties are just added to the list
-    if (mergedDatum === undefined) {
+    if (mergedDatum === null) {
+      console.log("Adding to updatedMergedData...");
       uniquePropertiesAdded++;
-      mergedData.push(newProperty);
+      updatedMergedData.push({
+        ...newProperty,
+        title: newProperty.title ? [newProperty.title] : [],
+        subtitle: newProperty.substring ? [newProperty.subtitle] : [],
+      });
       return;
     }
 
-    
-    // Do nothing with idential properties
-    if (JSON.stringify(mergedDatum) === JSON.stringify(newProperty)) {
-      identialPropertiesIgnored++;
-      return;
+    // existingPropertiesConflicts.push(newProperty.property_id);
+
+    if (!mergedDatum.title?.includes(newProperty.title)) {
+      console.log("titles different... pushhing title")
+      mergedDatum.title.push(newProperty.title);
     }
 
-    // Property already exists in merged data so we will merge it.
+    // Update merged datum
+    // console.log(newProperty)
+    // console.log(mergedDatum?.title, newProperty.title)
 
-    // Add in switch if web-scraper... is different do nothing || might be easier to do the ones that are the same.
+    // console.log("test", newProperty);
+    // console.log('no mergedDatum title', mergedDatum?.property_id)
+    // mergedDatum.title.push(newProperty.title)
+    // if (mergedDatum?.title && mergedData.title.contains(newProperty.title)) {
+    //   mergedDatum.title.push(newProperty.title)
+    // }
+    // if (mergedDatum.title[0] !== newProperty.title) {
+    //   mergedDatum.title.push(newProperty.title)
+    // }
+    // if (mergedDatum.subtitle[0] !== newProperty.subtitle) {
+    //   mergedDatum.subtitle.push(newProperty.subtitle)
+    // }
 
-    const alteredNewProperty = { ...newProperty };
-    const newPropertyProps = Object.entries(alteredNewProperty);
-
-    let tempPropsConflictList = [];
-    tempPropsConflictList.push(alteredNewProperty.property_id)
-    let test = 0;
-    newPropertyProps.forEach(([key, value]) => {
-      if (mergedData[key] !== value && test < 10) {
-        tempPropsConflictList.push(key)
-      }
-      test++;
-    });
-
-    console.log(tempPropsConflictList)
-    
-    
-    existingPropertiesConflicts.push(newProperty.property_id);
-    conflictingProps.push(tempPropsConflictList.join("|"));
-
-    // Temporarily Changing the Property Id to be updated later.
-    alteredNewProperty.property_id += "_CONFLICT";
-    mergedData.push(alteredNewProperty);
-    return;
-    
-
+    // // Temporarily Changing the Property Id to be updated later.
+    // alteredNewProperty.property_id += "_CONFLICT";
+    // mergedData.push(alteredNewProperty);
   });
 
   const valuesToLog = {
-    "Pre-merge properties": preMergeProperties,
+    "Pre-merge properties": preMergeNumberOfProperties,
     "+ Unique properties added": uniquePropertiesAdded,
     "+ Existing properties conflict": existingPropertiesConflicts.length,
     "= Post-merge properties": mergedData.length,
@@ -124,14 +138,18 @@ function getSortedMergeData() {
     return { "CONFLICT ID": n };
   });
 
-  
   const conflictPropsToLog = conflictingProps.map((n) => {
-    return { "Prop": n };
+    return { Prop: n };
   });
 
   console.table(valuesToLog);
-  // console.table(conflictsToLog);
+  console.table(conflictsToLog);
   // console.table(conflictPropsToLog);
+  console.log(conflictingProps);
 
-  return [...mergedData].sort((a, b) => a.property_id - b.property_id);;
+  return [...updatedMergedData].sort((a, b) => a.property_id - b.property_id);
 }
+
+// function getNewValueArray()
+
+init();
