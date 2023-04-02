@@ -4,7 +4,7 @@ import type { MergedPropertyDatum, ScrapedPropertyDatum } from "@shared/types";
 const MAX_CHAR_LIMIT = 19000;
 
 const mergedData: MergedPropertyDatum[] = JSON.parse(fs.readFileSync('./data/merged.json', 'utf8')) || [];
-const newData: ScrapedPropertyDatum[] = JSON.parse(fs.readFileSync('./data/test.json', 'utf8')) || [];
+const newData: ScrapedPropertyDatum[] = JSON.parse(fs.readFileSync('./data/scraped_data-2023_04_01.json', 'utf8')) || [];
 
 function init() {
   createBackupPreMergeData();
