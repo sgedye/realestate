@@ -27,8 +27,8 @@ export type MergedPropertyDatum = BasePropertyDatum & {
 // old types
 
 export type ScrapedPropertyType = {
-  "web-scraper-order": string;
-  "web-scraper-start-url": string;
+  "web-scraper-order"?: string;
+  "web-scraper-start-url"?: string;
   link: string;
   "link-href": string;
   address: string;
@@ -41,6 +41,7 @@ export type ScrapedPropertyType = {
   subtitle?: string;
   description?: string;
   building_size?: string;
+  property_history?: string;
   property_id: string;
 }
 

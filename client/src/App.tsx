@@ -17,6 +17,7 @@ import {
 } from "@shared/types";
 
 import townhouses from "../../server/data/townhouses.json";
+import manuallyAdded from "../../server/data/manually-added.json";
 import { useModal } from "~/hooks";
 
 export const Context = createContext({
@@ -67,6 +68,7 @@ function App() {
     const favouritedList = Object.values(favouritedProperties);
     const extendedPropertyList: ExtendedScrapedPropertyType[] = [
       ...townhouses,
+      ...manuallyAdded
     ].map((n) => {
       return {
         ...n,
@@ -158,7 +160,7 @@ function App() {
       <div className="container mx-auto my-8">
         <Todos />
         <Filters
-          results={[...townhouses].slice(0, 8)}
+          results={[...townhouses, ...manuallyAdded].slice(0, 8)}
           showHidden={showHidden}
           searchFilter={searchFilter}
           favouriteLevel={favouriteLevel}

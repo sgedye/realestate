@@ -7,7 +7,11 @@ export const PropertyDetails = (props: PropertyDetailsProps) => {
 
   return (
     <div className="flex gap-4 p-4">
-      <p>{(props.description || "").slice(0, 999)}</p>
+      <div>
+        <p>{(props.description || "").slice(0, 999)}</p>
+        <br />
+        {props.property_history && <p style={{fontSize: "1.25rem", lineHeight: 1.5, whiteSpace: "pre"}}>{props.property_history.slice(0, 999)}</p>}
+      </div>
       {/* <div className="-mr-4">
         <iframe
           width={400}
